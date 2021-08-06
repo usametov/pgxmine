@@ -5,13 +5,18 @@ pharmGKB <- as.data.table(matrix(nrow=0,ncol=2))
 pharmGKB_pmids <- c()
 colnames(pharmGKB) <- c('Variant','Chemical')
 pharmGKB_modifiedDate <- "0000-00-00"
+
 for (pharmGKBFilename in pharmGKBFilenames) {
   pharmGKBFilename <- normalizePath(pharmGKBFilename)
   fileInfo <- file.info(pharmGKBFilename)
-  tmpPharmGKB_modifiedDate <- strsplit(as.character(fileInfo$mtime), ' ')[[1]][1]
-  if (is.null(tmpPharmGKB_modifiedDate)) {
-    tmpPharmGKB_modifiedDate = sys.Date()
+
+  if(is.null(fileInfo$mtime)) {
+    tmpPharmGKB_modifiedDate <- "0000-00-00"
+  } 
+  else {
+    tmpPharmGKB_modifiedDate <- strsplit(as.character(fileInfo$mtime), ' ')[[1]][1]
   }
+  
   if (tmpPharmGKB_modifiedDate > pharmGKB_modifiedDate) {
     pharmGKB_modifiedDate <- tmpPharmGKB_modifiedDate
     paper.pharmgkbDate <- format(as.Date(fileInfo$mtime), format="%d %B %Y")
