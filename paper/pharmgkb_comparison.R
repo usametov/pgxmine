@@ -1,6 +1,6 @@
 source('dependencies.R')
 
-pharmGKBFilenames <- c('var_drug_ann.tsv','var_fa_ann.tsv','var_pheno_ann.tsv')
+pharmGKBFilenames <- c('https://zenodo.org/record/5165712/files/var_drug_ann.tsv','https://zenodo.org/record/5165712/files/var_fa_ann.tsv','https://zenodo.org/record/5165712/files/var_pheno_ann.tsv')
 pharmGKB <- as.data.table(matrix(nrow=0,ncol=2))
 pharmGKB_pmids <- c()
 colnames(pharmGKB) <- c('Variant','Chemical')
@@ -9,6 +9,9 @@ for (pharmGKBFilename in pharmGKBFilenames) {
   pharmGKBFilename <- normalizePath(pharmGKBFilename)
   fileInfo <- file.info(pharmGKBFilename)
   tmpPharmGKB_modifiedDate <- strsplit(as.character(fileInfo$mtime), ' ')[[1]][1]
+  if (is.null(tmpPharmGKB_modifiedDate)) {
+    tmpPharmGKB_modifiedDate = sys.Date()
+  }
   if (tmpPharmGKB_modifiedDate > pharmGKB_modifiedDate) {
     pharmGKB_modifiedDate <- tmpPharmGKB_modifiedDate
     paper.pharmgkbDate <- format(as.Date(fileInfo$mtime), format="%d %B %Y")
