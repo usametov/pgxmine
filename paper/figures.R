@@ -1,7 +1,7 @@
 source('dependencies.R')
 
-sentences <- fread('https://zenodo.org/record/5159021/files/pgxmine_sentences.tsv',sep='\t',header=T,stringsAsFactors=T,quote='', encoding = 'UTF-8')
-collated <- fread('https://zenodo.org/record/5159021/files/pgxmine_collated.tsv',sep='\t',header=T,stringsAsFactors=T,quote='', encoding = 'UTF-8')
+sentences <- fread('../../pgxmine-data/pgxmine_sentences.tsv',sep='\t',header=T,stringsAsFactors=T,quote='', encoding = 'UTF-8')
+collated <- fread('../../pgxmine-data/pgxmine_collated.tsv',sep='\t',header=T,stringsAsFactors=T,quote='', encoding = 'UTF-8')
 
 paper.mentionCount <- prettyNum(nrow(sentences),big.mark=',')
 paper.pmidCount <- prettyNum(length(unique(sentences$pmid)),big.mark=',')
@@ -130,3 +130,4 @@ inAbstract <- sum(sentences$section=='abstract')
 
 paper.mentionsInFullText <- prettyNum(nrow(sentences) - inTitle - inAbstract,big.mark=',')
 paper.mentionsInFullTextPerc <- round(100*(nrow(sentences) - inTitle - inAbstract)/nrow(sentences),1)
+

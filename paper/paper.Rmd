@@ -23,15 +23,17 @@ csl: world-neurosurgery.csl
 
 
 ```{r pgxmineSetup, include=FALSE}
-install.packages("gridExtra")
-install.packages("UpSetR")
-install.packages("vegan")
-install.packages("ggdendro")
-install.packages("gplots")
-install.packages("gridGraphics")
-install.packages("VennDiagram")
-install.packages("kableExtra")
-
+# install.packages("gridExtra")
+# install.packages("UpSetR")
+# install.packages("vegan")
+# install.packages("ggdendro")
+# install.packages("gplots")
+# install.packages("gridGraphics")
+# install.packages("VennDiagram")
+# install.packages("kableExtra")
+# install.packages("shiny")
+# install.packages("DT")
+#install.packages("dplyr")
 
 
 source('dependencies.R')

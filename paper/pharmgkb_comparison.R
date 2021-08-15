@@ -1,6 +1,7 @@
 source('dependencies.R')
 
-pharmGKBFilenames <- c('https://zenodo.org/record/5165712/files/var_drug_ann.tsv','https://zenodo.org/record/5165712/files/var_fa_ann.tsv','https://zenodo.org/record/5165712/files/var_pheno_ann.tsv')
+#fields descriptions: https://www.pharmgkb.org/page/downloadAnnotationsHelp
+pharmGKBFilenames <- c('../../pgxmine-data/var_drug_ann.tsv','../../pgxmine-data/var_fa_ann.tsv','../../pgxmine-data/var_pheno_ann.tsv')
 pharmGKB <- as.data.table(matrix(nrow=0,ncol=2))
 pharmGKB_pmids <- c()
 colnames(pharmGKB) <- c('Variant','Chemical')
@@ -9,14 +10,7 @@ pharmGKB_modifiedDate <- "0000-00-00"
 for (pharmGKBFilename in pharmGKBFilenames) {
   pharmGKBFilename <- normalizePath(pharmGKBFilename)
   fileInfo <- file.info(pharmGKBFilename)
-
-  if(is.null(fileInfo$mtime)) {
-    tmpPharmGKB_modifiedDate <- "0000-00-00"
-  } 
-  else {
-    tmpPharmGKB_modifiedDate <- strsplit(as.character(fileInfo$mtime), ' ')[[1]][1]
-  }
-  
+  tmpPharmGKB_modifiedDate <- strsplit(as.character(fileInfo$mtime), ' ')[[1]][1]
   if (tmpPharmGKB_modifiedDate > pharmGKB_modifiedDate) {
     pharmGKB_modifiedDate <- tmpPharmGKB_modifiedDate
     paper.pharmgkbDate <- format(as.Date(fileInfo$mtime), format="%d %B %Y")
@@ -55,7 +49,6 @@ pharmGKB3$Variant <- gsub(":\\d\\d:\\d\\d$","",pharmGKB3$Variant, perl=T)
 
 pharmGKB <- rbind(pharmGKB,pharmGKB2,pharmGKB3)
 pharmGKB <- pharmGKB[!duplicated(pharmGKB),]
-pharmGKB3$Variant <- gsub(":\\d\\d:\\d\\d$","",pharmGKB3$Variant, perl=T)
 
 pharmGKB2 <- NA
 pharmGKB3 <- NA
@@ -63,8 +56,8 @@ pharmGKB3 <- NA
 pharmGKB$Chemical_ID_Variant <- paste(pharmGKB$Chemical_ID,pharmGKB$Variant)
 pharmGKB$Chemical_ID_Variant[pharmGKB$Chemical_ID==''] <- ''
 
-sentencesFilename <- 'pgxmine_sentences.tsv'
-collatedFilename <- 'pgxmine_collated.tsv'
+sentencesFilename <- '../../pgxmine-data/pgxmine_sentences.tsv'
+collatedFilename <- '../../pgxmine-data/pgxmine_collated.tsv'
 collated <- fread(collatedFilename,sep='\t',header=T,stringsAsFactors=T,quote='', encoding = 'UTF-8')
 
 sentences <- fread(sentencesFilename,sep='\t',header=T,stringsAsFactors=T,quote='', encoding = 'UTF-8')
@@ -83,6 +76,7 @@ pgxMineAssociations <- pgxMineAssociations[pharmGKBAssociations!='']
 pharmGKBAssociations <- pharmGKBAssociations[!is.na(pharmGKBAssociations)]
 pgxMineAssociations <- pgxMineAssociations[!is.na(pgxMineAssociations)]
 
+#FIXME: pharmGKBAssociations and pgxMineAssociations are both empty
 associatonComparison <- venn.diagram(
   x = list(PharmGKB=pharmGKBAssociations , PGxMine=pgxMineAssociations ),
   scaled=T,
@@ -113,7 +107,7 @@ fig_comparison <- arrangeGrob(associationComparisonPlot,pmidComparisonPlot,ncol=
 grid.arrange(fig_comparison)
 
 
-pharmGKB$Chemical_ID
+head(unique(pharmGKB$Chemical_ID))
 
 notInPGMine_id <- pharmGKB$Chemical_ID[!(pharmGKB$Chemical_ID %in% collated$chemical_pharmgkb_id)]
 notInPGMine <- sort(unique(pharmGKB[pharmGKB$Chemical_ID %in% notInPGMine_id,'Chemical_Name']))
